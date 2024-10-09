@@ -5,9 +5,13 @@ data to a file.
 
 # ALGORITHM:
 STEP 1:Read the given Data.
+
 STEP 2:Clean the Data Set using Data Cleaning Process.
+
 STEP 3:Apply Feature Scaling for the feature in the data set.
+
 STEP 4:Apply Feature Selection for the feature in the data set.
+
 STEP 5:Save the data to the file.
 
 # FEATURE SCALING:
@@ -17,6 +21,7 @@ STEP 5:Save the data to the file.
 4. RobustScaler: RobustScaler transforms the feature vector by subtracting the median and then dividing by the interquartile range (75% value — 25% value).
 
 # FEATURE SELECTION:
+
 Feature selection is to find the best set of features that allows one to build useful models. Selecting the best features helps the model to perform well.
 The feature selection techniques used are:
 1.Filter Method
@@ -24,6 +29,173 @@ The feature selection techniques used are:
 3.Embedded Method
 
 # CODING AND OUTPUT:
-       # INCLUDE YOUR CODING AND OUTPUT SCREENSHOTS HERE
+```
+NAME : DILLIARASU M
+
+REFERENCE NO : 212223230049
+```
+```
+import pandas as pd
+import numpy as np
+import seaborn as sns
+from sklearn.model_selection import train_test_split
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.metrics import accuracy_score, confusion_matrix
+data=pd.read_csv("/content/income(1) (1).csv",na_values=[ " ?"])
+data
+```
+```
+![322410495-ca77f2ff-56d2-497a-b7c8-4758535ecd0d](https://github.com/user-attachments/assets/6b28747b-728c-48e3-bcab-a75bde7308ad)
+```
+```
+data.isnull().sum()
+```
+![322411208-df566d53-be78-4d89-bd82-d6951845258b](https://github.com/user-attachments/assets/dab48f09-23a1-4391-bd66-75db77f83cc2)
+```
+missing=data[data.isnull().any(axis=1)]
+missing
+```
+![322411323-6fd563b8-3d3f-422f-ac06-36025c5aeb33](https://github.com/user-attachments/assets/4b7db1c2-7c78-46e2-94f9-cfeadb8049af)
+```
+data2=data.dropna(axis=0)
+data2
+```
+![322411483-3f1b25f6-d6cc-4cf7-8296-69f41a06529e](https://github.com/user-attachments/assets/fb755ecf-4d7b-4148-8e7e-42321c8f0a3b)
+
+```
+sal=data["SalStat"]
+data2["SalStat"]=data["SalStat"].map({' less than or equal to 50,000':0,' greater than 50,000':1})
+print(data2['SalStat'])
+```
+![322411695-13028cf0-99aa-4049-83be-f9060f5b9bbf](https://github.com/user-attachments/assets/fa2128fa-9d3b-42f6-a2ec-03ed606366e0)
+
+```
+sal2=data2['SalStat']
+dfs=pd.concat([sal,sal2],axis=1)
+dfs
+```
+![322411975-23eec7bf-f38e-41db-a870-3d8df8103ea2](https://github.com/user-attachments/assets/162cdbb8-bba7-4219-bb75-c7c4dc88b45a)
+```
+data2
+```
+![322412081-521378b5-9719-4fbd-9457-fef525c9243a](https://github.com/user-attachments/assets/e3eec31a-bca5-49a7-81e0-767ab5169f7f)
+
+```
+new_data=pd.get_dummies(data2, drop_first=True)
+new_data
+```
+![322412270-7dc57367-3e63-47e6-97cc-b793d9c73813](https://github.com/user-attachments/assets/dadba84d-f94e-4516-8870-a32ebf6d3c20)
+
+```
+columns_list=list(new_data.columns)
+print(columns_list)
+```
+![322412417-47f4b895-72ce-4d25-bdc2-ae76a484fe26](https://github.com/user-attachments/assets/43a2ea88-7228-40a2-b9c9-5abfe50b4ef5)
+
+```
+features=list(set(columns_list)-set(['SalStat']))
+print(features)
+```
+![322412635-57ea8147-82b1-41d0-9e43-756165949ded](https://github.com/user-attachments/assets/4abe2748-df57-4605-9c0a-789aeccebb5a)
+
+```
+y=new_data['SalStat'].values
+print(y)
+```
+![322412766-c03713b9-12f8-41b1-bd30-21e93baef57c](https://github.com/user-attachments/assets/ae9f2e4e-7a8f-4f20-93fd-4311b6dddfd1)
+
+```
+x=new_data[features].values
+print(x)
+```
+![322412946-4c44ca14-3c12-4e8e-8455-f3a89fa9b2da](https://github.com/user-attachments/assets/6131a66c-d0ef-47d8-a218-cc8d3a9b4bd7)
+
+```
+train_x,test_x,train_y,test_y=train_test_split(x,y,test_size=0.3,random_state=0)
+KNN_classifier=KNeighborsClassifier(n_neighbors = 5)
+KNN_classifier.fit(train_x,train_y)
+```
+![322413131-f44b8500-30a4-4780-8594-198ad38248be](https://github.com/user-attachments/assets/4dd73181-4d3d-451a-9fce-73d82b2038bf)
+
+```
+prediction=KNN_classifier.predict(test_x)
+confusionMatrix=confusion_matrix(test_y, prediction)
+print(confusionMatrix)
+```
+
+![322413259-7a804881-6539-434f-8707-6af6b812bafc](https://github.com/user-attachments/assets/61731c04-3c08-4c3d-97ba-103f0ebeb650)
+```
+accuracy_score=accuracy_score(test_y,prediction)
+print(accuracy_score)
+```
+![322413360-a01da385-bca7-47b7-a4c1-2e14f779c859](https://github.com/user-attachments/assets/8c9ce77c-c79b-461a-8ff0-f24a68ad9a2a)
+
+```
+print("Misclassified Samples : %d" % (test_y !=prediction).sum())
+```
+![322413463-6a6242d6-e97e-4214-a850-905342ec9eb7](https://github.com/user-attachments/assets/8809cff4-a122-4540-be17-dab3da2e1a54)
+
+```
+data.shape
+```
+![322413628-b3d24141-7608-49e1-ab3a-ed195a1ae7fe](https://github.com/user-attachments/assets/574cb748-e358-4587-868d-438c98edcd21)
+
+```
+import pandas as pd
+from sklearn.feature_selection import SelectKBest, mutual_info_classif, f_classif
+data={
+    'Feature1': [1,2,3,4,5],
+    'Feature2': ['A','B','C','A','B'],
+    'Feature3': [0,1,1,0,1],
+    'Target'  : [0,1,1,0,1]
+}
+
+df=pd.DataFrame(data)
+x=df[['Feature1','Feature3']]
+y=df[['Target']]
+selector=SelectKBest(score_func=mutual_info_classif,k=1)
+x_new=selector.fit_transform(x,y)
+selected_feature_indices=selector.get_support(indices=True)
+selected_features=x.columns[selected_feature_indices]
+print("Selected Features:")
+print(selected_features)
+
+```
+![322413739-b89ccdd7-12db-4edd-b017-b5eeeb04e033](https://github.com/user-attachments/assets/65fb5093-4d15-41ba-a438-c69e1f5e75ae)
+
+```
+import pandas as pd
+import numpy as np
+from scipy.stats import chi2_contingency
+import seaborn as sns
+tips=sns.load_dataset('tips')
+tips.head()
+```
+![322413842-9fe99701-4887-490c-b0ae-7e913681954b](https://github.com/user-attachments/assets/4e180bc0-6d49-433b-8d05-3baf67173783)
+
+```
+tips.time.unique()
+```
+![322413956-62a26d0b-1d1f-462c-898f-647229d3d613](https://github.com/user-attachments/assets/4f570261-06d6-4f7b-a76f-170f0156424a)
+
+```
+contingency_table=pd.crosstab(tips['sex'],tips['time'])
+print(contingency_table)
+```
+![322414109-c4f24078-6573-44c9-8ff9-ef7197486de8](https://github.com/user-attachments/assets/83960cf8-50ca-4a68-a528-684d21ddd21e)
+
+```
+chi2,p,_,_=chi2_contingency(contingency_table)
+print(f"Chi-Square Statistics: {chi2}")
+print(f"P-Value: {p}")
+```
+![322414226-2d91381c-c939-4980-ab3e-ae4aaf828aab](https://github.com/user-attachments/assets/fc2b0fa4-c016-4fbd-9435-1c7979360634)
+
+
+
+
+
+
+       
 # RESULT:
-       # INCLUDE YOUR RESULT HERE
+  Thus, Feature selection and Feature scaling has been used on thegiven dataset.    
